@@ -1,0 +1,10 @@
+.singinholder{
+    width: 30%;
+    text-align: center;
+}
+
+.flexcol{
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-content: center;
+}
