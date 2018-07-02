@@ -5,6 +5,7 @@ import ImageLinkForm from '../components/ImageLinkForm/ImageLinkForm';
 import Rank from '../components/Rank/Rank';
 import FaceRecognition from '../components/FaceRecognition/FaceRecognition';
 import Singin from '../components/Singin/Singin';
+import Register from '../components/Register/Register';
 import Particles from 'react-particles-js';
 import PaticleConfig from './particlesjs-config.json';
 import Clarifai from 'clarifai';
@@ -21,6 +22,8 @@ class App extends Component {
       input: '',
       imageURL : '',
       box : {},
+      route: 'singin',
+      isSignedIn : false,
     }
   }
 
@@ -53,16 +56,43 @@ class App extends Component {
     .catch(err => console.log(err));
   }
 
+  onRouteChange = (route) => {
+    if(route === 'singout'){
+      this.setState({isSignedIn : false})
+    }
+    else if(route === 'home'){
+      this.setState({isSignedIn : true})
+    }
+    this.setState({route : route})
+  }
+
+  recoverPageFromRoute = () =>{
+    const{route, box, imageURL} = this.state;
+    switch(route){
+      case 'singout': // Fallthrough
+      case 'singin':
+        return <Singin onRouteChange ={this.onRouteChange} />;
+      case 'register':
+        return <Register onRouteChange={this.onRouteChange} />;
+      default:
+        return(
+          <div>
+            <Logo />
+            <Rank />
+            <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit ={this.onButtonSubmit}/>
+            <FaceRecognition box={box} imageURL={imageURL}/>
+          </div>
+        );
+    }
+  }
+
   render() {
+    
     return (
       <div className="App">
-        <Particles className='particles' params={PaticleConfig} />
-        <Singin/>
-        <Navigation />
-        <Logo />
-        <Rank />
-        <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit ={this.onButtonSubmit}/>
-        <FaceRecognition box={this.state.box} imageURL={this.state.imageURL}/>
+        <Particles className='particles' params={PaticleConfig} />        
+        <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange} />
+        {this.recoverPageFromRoute()}
       </div>
     );
   }
