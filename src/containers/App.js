@@ -24,7 +24,25 @@ class App extends Component {
       box : {},
       route: 'singin',
       isSignedIn : false,
+      user : { 
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: '',
+      },
     }
+  }
+
+  loadUser = (registereduser) =>{
+    this.setState({user: {
+        id: registereduser.id,
+        name: registereduser.name,
+        email: registereduser.email,
+        entries: registereduser.entries,
+        joined: registereduser.joined,
+      }
+    });
   }
 
   getFaceLocation = (data) =>{
@@ -48,11 +66,25 @@ class App extends Component {
     this.setState({input : event.target.value});
   }
 
-  onButtonSubmit = (event) =>{
+  onPicutreSubmit = () =>{
     this.setState({imageURL: this.state.input});
 
     app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
-    .then((response) => this.displayBoundingBox(this.getFaceLocation(response)))
+    .then(response =>{
+      fetch('http://localhost:3001/image',{
+        method : 'PUT',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+            id : this.state.user.id
+        })
+      })
+      .then(response => response.json())
+      .then( count =>{
+        this.setState(Object.assign(this.state.user, { entries : count} ))
+      });
+
+      this.displayBoundingBox(this.getFaceLocation(response))
+    })
     .catch(err => console.log(err));
   }
 
@@ -71,15 +103,15 @@ class App extends Component {
     switch(route){
       case 'singout': // Fallthrough
       case 'singin':
-        return <Singin onRouteChange ={this.onRouteChange} />;
+        return <Singin loadUser = {this.loadUser} onRouteChange ={this.onRouteChange} />;
       case 'register':
-        return <Register onRouteChange={this.onRouteChange} />;
+        return <Register loadUser = {this.loadUser} onRouteChange={this.onRouteChange} />;
       default:
         return(
           <div>
             <Logo />
-            <Rank />
-            <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit ={this.onButtonSubmit}/>
+            <Rank user={this.state.user}/>
+            <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit ={this.onPicutreSubmit}/>
             <FaceRecognition box={box} imageURL={imageURL}/>
           </div>
         );
