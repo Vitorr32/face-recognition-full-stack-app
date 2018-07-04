@@ -8,30 +8,28 @@ import Singin from '../components/Singin/Singin';
 import Register from '../components/Register/Register';
 import Particles from 'react-particles-js';
 import PaticleConfig from './particlesjs-config.json';
-import Clarifai from 'clarifai';
 import './App.css';
 
-const app = new Clarifai.App({
-  apiKey: 'e25d4397564b4d5abbfa90da26bb9c4d'
-});
+
+const defaultState = {
+  input: '',
+  imageURL : '',
+  box : {},
+  route: 'singin',
+  isSignedIn : false,
+  user : { 
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: '',
+  }
+};
 
 class App extends Component {
   constructor(){
     super();
-    this.state = {
-      input: '',
-      imageURL : '',
-      box : {},
-      route: 'singin',
-      isSignedIn : false,
-      user : { 
-        id: '',
-        name: '',
-        email: '',
-        entries: 0,
-        joined: '',
-      },
-    }
+    this.state = defaultState;
   }
 
   loadUser = (registereduser) =>{
@@ -69,19 +67,27 @@ class App extends Component {
   onPicutreSubmit = () =>{
     this.setState({imageURL: this.state.input});
 
-    app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+    fetch('https://young-wave-95662.herokuapp.com/imageurl',{
+        method : 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          input : this.state.input
+      })
+    })
+    .then(response => response.json())
     .then(response =>{
-      fetch('http://localhost:3001/image',{
+      fetch('https://young-wave-95662.herokuapp.com/image',{
         method : 'PUT',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
             id : this.state.user.id
-        })
+        }),
       })
       .then(response => response.json())
-      .then( count =>{
+      .then(count =>{
         this.setState(Object.assign(this.state.user, { entries : count} ))
-      });
+      })
+      .catch(err => console.log(err));
 
       this.displayBoundingBox(this.getFaceLocation(response))
     })
@@ -90,7 +96,7 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if(route === 'singout'){
-      this.setState({isSignedIn : false})
+      this.setState(this.setState(defaultState))
     }
     else if(route === 'home'){
       this.setState({isSignedIn : true})

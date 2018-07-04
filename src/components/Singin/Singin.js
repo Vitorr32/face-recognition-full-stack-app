@@ -19,7 +19,7 @@ class Singin extends React.Component {
     }
 
     onSubmitSignIn = () =>{
-        fetch('htto://localhost:3001/signin', {
+        fetch('https://young-wave-95662.herokuapp.com/signin', {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({
@@ -33,7 +33,8 @@ class Singin extends React.Component {
                 this.props.loadUser(user);
                 this.props.onRouteChange('home');
             }
-        });
+        })
+        .catch(err => console.log(err));
     }
 
     render(){
@@ -52,7 +53,6 @@ class Singin extends React.Component {
                                 <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
                                 <input onChange={this.onPasswordChange} className="b pa2 input-reset ba bg-transparent hover-bg-blue hover-white w-100" type="password" name="password"  id="password"/>
                             </div>
-                                <label className="pa0 ma0 lh-copy f6 pointer"><input type="checkbox"/> Remember me</label>
                         </fieldset>
                         <div className="">
                             <input onClick={this.onSubmitSignIn} className="b ph3 pv2 input-reset ba b--blue bg-transparent grow pointer f6 dib" type="submit" value="Sign in"/>

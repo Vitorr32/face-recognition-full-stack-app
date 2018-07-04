@@ -5,10 +5,10 @@ const Rank = ({user}) => {
     return (
         <div>  
             <div className='white f3'>
-                {`Hello ${user.name}, you are our..`}
+                {`Hello ${user.name}, you have...`}
             </div>
             <div className='white f1'>
-                {`${user.entries} in submissions!`}
+                {`${user.entries} submissions!`}
             </div>
         </div>
     );
