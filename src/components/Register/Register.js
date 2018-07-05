@@ -9,8 +9,7 @@ class Register extends React.Component {
             email : '',
             emailfeedback: '',
             password: '',
-            passwordfeedback: '',
-            valid: false
+            passwordfeedback: ''
         }
         this.references = React.createRef();
     }
@@ -18,100 +17,74 @@ class Register extends React.Component {
 
     onNameChange = (event) => {
         const {value} = event.target;
+        this.setState({ name : value});  
+        this.nameValidation(value);      
+    }
 
-        this.setState({ name : value});
-
+    nameValidation = (value) =>{
         if(!value){
-            this.setState({
-                namefeedback : 'You have a name...rigth?',
-                valid: false
-            });
+            this.setState({ namefeedback : 'You have a name...rigth?'});
+            return false;
         }
         else if(value.length > 100){
-            this.setState({
-                namefeedback : 'Your name need to be less than 100 characteres long',
-                valid : false
-            });
+            this.setState({namefeedback : 'Your name need to be less than 100 characteres long'});
+            return false;
         }
         else{
-            this.setState({
-                namefeedback : '',
-            });            
+            this.setState({namefeedback : ''});  
+            return true;          
         }
-    }
+    } 
 
     onEmailChange = (event) => {
         const {value} = event.target;
+        this.setState({email : value});        
+        this.emailValidation(value);        
+    }
+
+    emailValidation = (value) =>{        
         const re = new RegExp('^\\S+@\\S+[\\.][0-9a-z]+$');
 
-        this.setState({email : value});        
-
-        console.log(value + " is " + re.test(value));
-
         if(!value){
-            this.setState({
-                emailfeedback : 'You need a email so that you can login later',
-                valid: false
-            });
+            this.setState({emailfeedback : 'You need a email so that you can login later' });
+            return false;
         }
         else if(!re.test(value)){
-            this.setState({
-                emailfeedback : `That's not a valid email format`,
-                valid : false
-            });
+            this.setState({emailfeedback : `That's not a valid email format` });
+            return false;
         }
         else{
-            this.setState({
-                emailfeedback : '',
-            });            
+            this.setState({emailfeedback : ''});  
+            return true;          
         }
     }
 
     onPasswordChange = (event) => {
         const {value} = event.target;
-
-        this.setState({ password : value});
-
-        if(!value){
-            this.setState({
-                passwordfeedback : 'You need a password so that you can login later',
-                valid: false
-            });
-        }
-        else{
-            this.setState({
-                passwordfeedback : '',
-            });            
-        }
+        this.setState({ password : value});   
+        this.passwordValidation(value);     
     }
 
-    checkValidEmail = () => {
-        const {email} = this.state;
-        fetch('https://young-wave-95662.herokuapp.com/registercheck', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({
-                email : email
-            }),
-        }).then( response => {
-            if(response.status === 200){
-                return true;
-            }
-            else if(response.status === 409){
-                this.setState({emailfeedback : 'Esse email já está registrado'})
-                return false;
-            }
-        })
+    passwordValidation = (value) =>{
+        if(!value){
+            this.setState({ passwordfeedback : 'You need a password so that you can login later'});
+            return false;
+        }
+        else{
+            this.setState({passwordfeedback : ''});   
+            return true;         
+        }
     }
 
     onSubmitRegister = () =>{
-        const {name, email, password, valid} = this.state;
+        const {name, email, password} = this.state;
         
-        //If any of the fields is invalid or the email is not valid
-        if(!this.checkValidEmail()) {return;}
-        console.log("All okay!");
-        return;
-        /*
+        //If any of the fields holds an invalid input...abort submit
+        if(!this.nameValidation(name) || !this.emailValidation(email) || !this.passwordValidation(password)) {
+            return;
+        }
+        
+
         fetch('https://young-wave-95662.herokuapp.com/register', {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
@@ -128,10 +101,9 @@ class Register extends React.Component {
                 this.props.onRouteChange('home');
             }
             else{
-
+                this.setState({ emailfeedback : 'This email is already being used!'});
             }
         });
-        */
     }
 
     render(){    

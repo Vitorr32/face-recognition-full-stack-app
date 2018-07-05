@@ -7,12 +7,15 @@ class Singin extends React.Component {
         this.state = {
             signInEmail : '',
             signInPassword: '',
+            feedback: ''
         }
     }
 
     onEmailChange = (event) => {
         this.setState({ signInEmail : event.target.value});
     }
+
+    
 
     onPasswordChange = (event) => {
         this.setState({ signInPassword : event.target.value});
@@ -34,7 +37,10 @@ class Singin extends React.Component {
                 this.props.onRouteChange('home');
             }
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            console.log(err);
+            this.setState({feedback : 'User or password are invalid'});
+        });
     }
 
     render(){
@@ -56,6 +62,7 @@ class Singin extends React.Component {
                         </fieldset>
                         <div className="">
                             <input onClick={this.onSubmitSignIn} className="b ph3 pv2 input-reset ba b--blue bg-transparent grow pointer f6 dib" type="submit" value="Sign in"/>
+                            <label>{this.state.feedback}</label>
                         </div>
                         <div className="lh-copy mt3">
                             <a href="#0" onClick={() => onRouteChange('register')} className="f6 link dim blue db">Register</a>
