@@ -47,6 +47,7 @@ class App extends Component {
     const image = document.getElementById('inputimage');
     const width = Number(image.width);
     const height = Number(image.height);
+    console.log('Received data :' + data);
     const boxes = data.outputs[0].data.regions.map((region) =>{
       const box = region.region_info.bounding_box
       return {
@@ -56,7 +57,7 @@ class App extends Component {
         bottomRow: height - (box.bottom_row * height),
       }
     });
-    console.log(boxes);
+    console.log('Processed data :' + boxes);
     return boxes;
   }
 
@@ -108,7 +109,8 @@ class App extends Component {
 
       
       //this.displayBoundingBox(this.getFaceLocation(response))
-      this.displayBoundingBox(this.getFacesLocations(response))
+      this.displayBoundingBox(this.getFacesLocations(response));
+      console.log('final box :' + this.state.box);
     })
     .catch(err => console.log(err));
   }

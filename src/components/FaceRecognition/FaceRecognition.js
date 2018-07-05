@@ -4,7 +4,6 @@ import './FaceRecognition.css'
 class FaceRecognition extends React.Component{
 
     renderBoxes = (boxes) =>{
-        console.log(boxes);
         const result = boxes.map((box)=>{
             return <div className='bounding-box' style={{top: box.topRow, left: box.leftCol, bottom: box.bottomRow, right: box.rightCol }}></div>
         });
