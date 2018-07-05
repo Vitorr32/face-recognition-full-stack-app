@@ -108,8 +108,8 @@ class Register extends React.Component {
         const {name, email, password, valid} = this.state;
         
         //If any of the fields is invalid or the email is not valid
-        if(!valid || this.checkValidEmail()) {return;}
-
+        if(!this.checkValidEmail()) {return;}
+        console.log("All okay!");
         return;
         /*
         fetch('https://young-wave-95662.herokuapp.com/register', {
