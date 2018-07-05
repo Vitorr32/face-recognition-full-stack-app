@@ -56,6 +56,7 @@ class App extends Component {
         bottomRow: height - (box.bottom_row * height),
       }
     });
+    console.log(boxes);
     return boxes;
   }
 
