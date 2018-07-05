@@ -14,7 +14,7 @@ import './App.css';
 const defaultState = {
   input: '',
   imageURL : '',
-  box : {},
+  box : [],
   route: 'singin',
   isSignedIn : false,
   user : { 
@@ -47,7 +47,6 @@ class App extends Component {
     const image = document.getElementById('inputimage');
     const width = Number(image.width);
     const height = Number(image.height);
-    console.log('Received data :' + data);
     const boxes = data.outputs[0].data.regions.map((region) =>{
       const box = region.region_info.bounding_box
       return {
@@ -57,21 +56,7 @@ class App extends Component {
         bottomRow: height - (box.bottom_row * height),
       }
     });
-    console.log('Processed data :' + boxes);
     return boxes;
-  }
-
-  getFaceLocation = (data) =>{
-    const clarifaiface = data.outputs[0].data.regions[0].region_info.bounding_box;
-    const image = document.getElementById('inputimage');
-    const width = Number(image.width);
-    const height = Number(image.height);
-    return {
-      leftCol: clarifaiface.left_col * width,
-      topRow: clarifaiface.top_row * height,
-      rightCol: width - (clarifaiface.right_col * width),
-      bottomRow: height - (clarifaiface.bottom_row * height),
-    }
   }
 
   displayBoundingBox = (box) =>{
@@ -93,6 +78,7 @@ class App extends Component {
       })
     })
     .then(response => response.json())
+    .then(data => this.displayBoundingBox(this.getFacesLocations(data)))
     .then(response =>{
       fetch('https://young-wave-95662.herokuapp.com/image',{
         method : 'PUT',
@@ -106,11 +92,6 @@ class App extends Component {
         this.setState(Object.assign(this.state.user, { entries : count} ))
       })
       .catch(err => console.log(err));
-
-      
-      //this.displayBoundingBox(this.getFaceLocation(response))
-      this.displayBoundingBox(this.getFacesLocations(response));
-      console.log('final box :' + this.state.box);
     })
     .catch(err => console.log(err));
   }

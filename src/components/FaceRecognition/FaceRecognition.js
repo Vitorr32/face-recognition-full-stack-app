@@ -2,10 +2,10 @@ import React from 'react';
 import './FaceRecognition.css'
 
 class FaceRecognition extends React.Component{
-
+    
     renderBoxes = (boxes) =>{
-        const result = boxes.map((box)=>{
-            return <div className='bounding-box' style={{top: box.topRow, left: box.leftCol, bottom: box.bottomRow, right: box.rightCol }}></div>
+        const result = boxes.map((box,iterator)=>{
+            return <div key={`box${iterator}`} className='bounding-box' style={{top: box.topRow, left: box.leftCol, bottom: box.bottomRow, right: box.rightCol }}></div>
         });
         return result;
     }
@@ -13,7 +13,7 @@ class FaceRecognition extends React.Component{
     render(){
         const {imageURL,box} = this.props  
         
-        if(!imageURL){ return null; }
+        if(!imageURL || !box){ return null; }
 
         return(
             <div className='center'>
