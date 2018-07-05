@@ -36,10 +36,12 @@ class Singin extends React.Component {
                 this.props.loadUser(user);
                 this.props.onRouteChange('home');
             }
+            else{
+                this.setState({feedback : user});
+            }
         })
         .catch(err => {
-            console.log(err);
-            this.setState({feedback : 'User or password are invalid'});
+            console.log(err);           
         });
     }
 
@@ -61,8 +63,8 @@ class Singin extends React.Component {
                             </div>
                         </fieldset>
                         <div className="">
-                            <input onClick={this.onSubmitSignIn} className="b ph3 pv2 input-reset ba b--blue bg-transparent grow pointer f6 dib" type="submit" value="Sign in"/>
-                            <label>{this.state.feedback}</label>
+                            <input onClick={this.onSubmitSignIn} className="b ph3 pv2 input-reset ba b--blue bg-transparent grow pointer f6 dib" id="submit" type="submit" value="Sign in"/>
+                            <label htmlFor="submit" className="db fw6 lh-copy f6 dark-red">{this.state.feedback}</label>
                         </div>
                         <div className="lh-copy mt3">
                             <a href="#0" onClick={() => onRouteChange('register')} className="f6 link dim blue db">Register</a>
