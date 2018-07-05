@@ -11,7 +11,6 @@ class Register extends React.Component {
             password: '',
             passwordfeedback: ''
         }
-        this.references = React.createRef();
     }
 
 
