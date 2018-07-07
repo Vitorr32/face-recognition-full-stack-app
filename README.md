@@ -23,12 +23,12 @@ needed for each account, and also, the number of photos that he submitted will b
 Finally, the controllers make sure that the password is properly hashed before inputting it at the database, and make a 
 properly validation check of the content to be stored.
 
-##Host
+## Host
 
 Thanks to Heroku Cloud Application I could host the full application, on their servers, and it is running right now on the
 link of the project up there!
 
-##Objective
+## Objective
 
 As well as a learning experience, I hope this application can convince you of my skills using React.js and Node.js.
 I am up for freelancer work, you can contact me if you are interested.
