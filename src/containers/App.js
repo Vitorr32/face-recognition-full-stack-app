@@ -7,6 +7,8 @@ import FaceRecognition from '../components/FaceRecognition/FaceRecognition';
 import Singin from '../components/Singin/Singin';
 import Register from '../components/Register/Register';
 import Particles from 'react-particles-js';
+import Modal from '../components/Modal/Modal';
+import Profile from '../components/Profile/Profile';
 import PaticleConfig from './particlesjs-config.json';
 import './App.css';
 
@@ -17,6 +19,7 @@ const defaultState = {
   box : [],
   route: 'singin',
   isSignedIn : false,
+  isProfileOpen: false,
   user : { 
     id: '',
     name: '',
@@ -98,7 +101,7 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if(route === 'singout'){
-      this.setState(this.setState(defaultState))
+      return this.setState(this.setState(defaultState))
     }
     else if(route === 'home'){
       this.setState({isSignedIn : true})
@@ -126,12 +129,24 @@ class App extends Component {
     }
   }
 
+  toogleModal = () => {
+    this.setState( 
+      prevState => ({isProfileOpen : !prevState.isProfileOpen})
+    );
+  }
+
   render() {
     
     return (
       <div className="App">
         <Particles className='particles' params={PaticleConfig} />        
-        <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange} />
+        <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange} toogleModal={this.toogleModal}/>
+        {this.state.isProfileOpen &&       
+          <Modal>
+            <Profile isProfileOpen={this.state.isProfileOpen} toogleModal={this.toogleModal}/>
+          </Modal>
+          
+        }
         {this.recoverPageFromRoute()}
       </div>
     );

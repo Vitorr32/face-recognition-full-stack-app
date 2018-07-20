@@ -1,10 +1,12 @@
 import React from 'react';
 
-const Navigation = ({onRouteChange, isSignedIn}) => {
+import Profileicon from '../Profile/Profileicon';
+
+const Navigation = ({onRouteChange, isSignedIn, toogleModal}) => {
     if(isSignedIn){
         return(
         <nav style={{display:'flex', justifyContent:'flex-end'}}>
-            <p onClick={() => onRouteChange('singout')} className='f3 link dim black underline pad3 pointer'>Sing Out</p>
+            <Profileicon onRouteChange={onRouteChange} toogleModal={toogleModal}/>
         </nav>
         );
     }else{
