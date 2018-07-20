@@ -26,6 +26,9 @@ const defaultState = {
     email: '',
     entries: 0,
     joined: '',
+    age: 0,
+    pet: '',
+
   }
 };
 
@@ -35,6 +38,39 @@ class App extends Component {
     this.state = defaultState;
   }
 
+  componentDidMount(){
+    const token = window.sessionStorage.getItem('token');
+    if(token){
+      fetch('https://young-wave-95662.herokuapp.com/signin',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token,
+        }
+      })
+      .then(res => res.json())
+      .then( data => {
+        if(data && data.id){
+          fetch(`https://young-wave-95662.herokuapp.com/profile/${data.id}`,{
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': token,
+            }
+          })
+          .then(res => res.json())
+          .then(user => {
+            if(user && user.email){
+              this.loadUser(user);
+              this.onRouteChange('home');
+            }
+          })
+        }
+      })
+      .catch(err =>  console.log(err))
+    }
+  }
+
   loadUser = (registereduser) =>{
     this.setState({user: {
         id: registereduser.id,
@@ -42,11 +78,14 @@ class App extends Component {
         email: registereduser.email,
         entries: registereduser.entries,
         joined: registereduser.joined,
+        age: registereduser.age,
+        pet: registereduser.pet,
       }
     });
   }
 
   getFacesLocations = (data) =>{
+    if(!data || !data.outputs){ return;}
     const image = document.getElementById('inputimage');
     const width = Number(image.width);
     const height = Number(image.height);
@@ -63,7 +102,9 @@ class App extends Component {
   }
 
   displayBoundingBox = (box) =>{
-    this.setState({box : box});
+    if(box){
+      this.setState({box : box});
+    }
   }
 
   onInputChange = (event) =>{
@@ -75,7 +116,10 @@ class App extends Component {
 
     fetch('https://young-wave-95662.herokuapp.com/imageurl',{
         method : 'POST',
-        headers: {'Content-Type':'application/json'},
+        headers: {
+          'Content-Type':'application/json',
+          'Authorization': window.sessionStorage.getItem('token'),
+        },
         body: JSON.stringify({
           input : this.state.input
       })
@@ -85,7 +129,10 @@ class App extends Component {
     .then(response =>{
       fetch('https://young-wave-95662.herokuapp.com/image',{
         method : 'PUT',
-        headers: {'Content-Type':'application/json'},
+        headers: {
+          'Content-Type':'application/json',
+          'Authorization': window.sessionStorage.getItem('token'),
+        },
         body: JSON.stringify({
             id : this.state.user.id
         }),
@@ -143,9 +190,8 @@ class App extends Component {
         <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange} toogleModal={this.toogleModal}/>
         {this.state.isProfileOpen &&       
           <Modal>
-            <Profile isProfileOpen={this.state.isProfileOpen} toogleModal={this.toogleModal}/>
-          </Modal>
-          
+            <Profile isProfileOpen={this.state.isProfileOpen} toogleModal={this.toogleModal} loadUser={this.loadUser}/>
+          </Modal>          
         }
         {this.recoverPageFromRoute()}
       </div>
